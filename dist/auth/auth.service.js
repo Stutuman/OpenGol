@@ -41,58 +41,43 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsuariosService = void 0;
+exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
-const usuario_entity_1 = require("./entities/usuario.entity");
+const usuarios_service_1 = require("../usuarios/usuarios.service");
+const jwt_1 = require("@nestjs/jwt");
 const bcrypt = __importStar(require("bcrypt"));
-let UsuariosService = class UsuariosService {
-    usuarioRepository;
-    constructor(usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+let AuthService = class AuthService {
+    usuariosService;
+    jwtService;
+    constructor(usuariosService, jwtService) {
+        this.usuariosService = usuariosService;
+        this.jwtService = jwtService;
     }
-    async registrar(datosUsuario) {
-        try {
-            const { nombre, email, password, telefono } = datosUsuario;
-            const saltRounds = 10;
-            const passwordHash = await bcrypt.hash(password, saltRounds);
-            const nuevoUsuario = this.usuarioRepository.create({
-                nombre,
-                email,
-                password_hash: passwordHash,
-                telefono,
-            });
-            await this.usuarioRepository.save(nuevoUsuario);
-            const { password_hash, ...usuarioSeguro } = nuevoUsuario;
-            return {
-                mensaje: '¡Usuario registrado con éxito para jugar!',
-                usuario: usuarioSeguro
-            };
+    async login(datosLogin) {
+        const { email, password } = datosLogin;
+        const usuarioEncontrado = await this.usuariosService.buscarPorEmail(email);
+        if (!usuarioEncontrado) {
+            throw new common_1.UnauthorizedException('Credenciales inválidas. Revisá tu correo o contraseña.');
         }
-        catch (error) {
-            console.error(error);
-            if (error.code === '23505') {
-                throw new common_1.ConflictException('Este correo electrónico ya está registrado en openGol. ¡Intentá iniciar sesión!');
-            }
-            throw new common_1.InternalServerErrorException('Hubo un error al registrar el usuario');
+        const laClaveCoincide = await bcrypt.compare(password, usuarioEncontrado.password_hash);
+        if (!laClaveCoincide) {
+            throw new common_1.UnauthorizedException('Credenciales inválidas. Revisá tu correo o contraseña.');
         }
+        const { password_hash, ...usuarioSeguro } = usuarioEncontrado;
+        const payload = { sub: usuarioEncontrado.id, email: usuarioEncontrado.email };
+        const tokenVip = await this.jwtService.signAsync(payload);
+        return {
+            mensaje: '¡Inicio de sesión exitoso! Bienvenido a openGol.',
+            usuario: usuarioSeguro,
+            access_token: tokenVip
+        };
     }
-    async buscarPorEmail(email) {
-        return this.usuarioRepository.findOne({
-            where: { email: email }
-        });
-    }
-    s;
 };
-exports.UsuariosService = UsuariosService;
-exports.UsuariosService = UsuariosService = __decorate([
+exports.AuthService = AuthService;
+exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, typeorm_1.InjectRepository)(usuario_entity_1.Usuario)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
-], UsuariosService);
-//# sourceMappingURL=usuarios.service.js.map
+    __metadata("design:paramtypes", [usuarios_service_1.UsuariosService,
+        jwt_1.JwtService])
+], AuthService);
+//# sourceMappingURL=auth.service.js.map
