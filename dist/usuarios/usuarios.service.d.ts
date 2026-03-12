@@ -15,4 +15,6 @@ export declare class UsuariosService {
             fecha_registro: Date;
         };
     }>;
+    buscarPorEmail(email: string): Promise<Usuario | null>;
+    s: any;
 }

@@ -1,10 +1,9 @@
-import { Injectable, InternalServerErrorException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException,InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
 import * as bcrypt from 'bcrypt';
 import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
-
 @Injectable()
 export class UsuariosService {
   constructor(
@@ -44,4 +43,10 @@ export class UsuariosService {
       throw new InternalServerErrorException('Hubo un error al registrar el usuario');
     }
   }
+  async buscarPorEmail(email:string){
+    return this.usuarioRepository.findOne({
+      where:{email:email}
+    })
+  }
+  s
 }
