@@ -1,0 +1,9 @@
+CREATE TABLE usuarios(
+id SERIAL PRIMARY KEY,
+nombre VARCHAR(100) NOT NULL,
+email VARCHAR(150) UNIQUE NOT NULL,
+password_hash VARCHAR(255) NOT NULL,
+telefono VARCHAR(20),
+nivel_juego VARCHAR(50) DEFAULT 'Amateur',
+fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
