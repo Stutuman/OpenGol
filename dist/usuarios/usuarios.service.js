@@ -56,6 +56,17 @@ let UsuariosService = class UsuariosService {
     constructor(usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
+    async obtenerPerfil(id) {
+        const usuario = await this.usuarioRepository.findOneBy({ id });
+        if (!usuario) {
+            throw new common_1.NotFoundException('usuario no encontrado');
+        }
+        const { password_hash, ...usuarioSeguro } = usuario;
+        return usuarioSeguro;
+    }
+    async eliminar() {
+        return 'yo elimino el usuario';
+    }
     async registrar(datosUsuario) {
         try {
             const { nombre, email, password, telefono } = datosUsuario;
@@ -87,7 +98,24 @@ let UsuariosService = class UsuariosService {
             where: { email: email }
         });
     }
-    s;
+    async actualizar(id, datosActualizar) {
+        const usuarioEncontrado = await this.usuarioRepository.findOneBy({ id });
+        if (!usuarioEncontrado) {
+            throw new common_1.NotFoundException(`El jugador con ID ${id} no existe`);
+        }
+        if (datosActualizar.password) {
+            const saltRounds = 10;
+            usuarioEncontrado.password_hash = await bcrypt.hash(datosActualizar.password, saltRounds);
+            delete datosActualizar.password;
+        }
+        const usuarioModificado = Object.assign(usuarioEncontrado, datosActualizar);
+        await this.usuarioRepository.save(usuarioModificado);
+        const { password_hash, ...usuarioSeguro } = usuarioModificado;
+        return {
+            mensaje: '¡Perfil actualizado correctamente!',
+            usuario: usuarioSeguro,
+        };
+    }
 };
 exports.UsuariosService = UsuariosService;
 exports.UsuariosService = UsuariosService = __decorate([

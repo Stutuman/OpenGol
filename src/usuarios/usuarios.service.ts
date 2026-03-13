@@ -1,15 +1,28 @@
-import { Injectable, UnauthorizedException,InternalServerErrorException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException,InternalServerErrorException, ConflictException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from './entities/usuario.entity';
 import * as bcrypt from 'bcrypt';
 import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
+import { ActualizarUsuarioDto } from './dto/actualizar-usuario.dto';
 @Injectable()
 export class UsuariosService {
   constructor(
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
   ) {}
+
+  async obtenerPerfil(id:number ){
+    const usuario = await this.usuarioRepository.findOneBy({id})
+    if(!usuario){
+      throw new NotFoundException('usuario no encontrado')
+    }
+    const{password_hash,...usuarioSeguro}=usuario;
+    return usuarioSeguro;  
+  }
+  async eliminar(){
+    return 'yo elimino el usuario'
+  }
 
   async registrar(datosUsuario: RegistrarUsuarioDto) {
     try {
@@ -48,5 +61,29 @@ export class UsuariosService {
       where:{email:email}
     })
   }
-  s
+  async actualizar(id: number, datosActualizar: ActualizarUsuarioDto) {
+    const usuarioEncontrado = await this.usuarioRepository.findOneBy({ id });
+
+    if (!usuarioEncontrado) {
+      throw new NotFoundException(`El jugador con ID ${id} no existe`);
+    }
+
+    // Si el usuario cambia la password, la hasheamos antes de guardar
+    if (datosActualizar.password) {
+      const saltRounds = 10;
+      usuarioEncontrado.password_hash = await bcrypt.hash(datosActualizar.password, saltRounds);
+      delete datosActualizar.password; // Limpiamos la clave plana del DTO
+    }
+
+    // "Pisamos" los datos viejos con los nuevos
+    const usuarioModificado = Object.assign(usuarioEncontrado, datosActualizar);
+    await this.usuarioRepository.save(usuarioModificado);
+
+    const { password_hash, ...usuarioSeguro } = usuarioModificado;
+    return {
+      mensaje: '¡Perfil actualizado correctamente!',
+      usuario: usuarioSeguro,
+    };
+  }
+
 }
