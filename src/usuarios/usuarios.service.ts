@@ -76,7 +76,7 @@ export class UsuariosService {
     }
 
     // "Pisamos" los datos viejos con los nuevos
-    const usuarioModificado = Object.assign(usuarioEncontrado, datosActualizar);
+    const usuarioModificado = this.usuarioRepository.merge(usuarioEncontrado, datosActualizar);
     await this.usuarioRepository.save(usuarioModificado);
 
     const { password_hash, ...usuarioSeguro } = usuarioModificado;

@@ -35,7 +35,6 @@ export declare class UsuariosService {
             telefono: string;
             nivel_juego: string;
             fecha_registro: Date;
-            password?: string;
         };
     }>;
 }

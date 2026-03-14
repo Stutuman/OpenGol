@@ -3,9 +3,12 @@ import { UsuariosService } from './usuarios.service';
 import { RegistrarUsuarioDto } from './dto/registrar-usuario.dto';
 import { ActualizarUsuarioDto } from './dto/actualizar-usuario.dto';
 import { AuthGuard } from '../auth/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+@ApiTags('usuarios')
 @Controller('api/usuarios') 
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Get('perfil')
   async verPerfil(@Req() request) {
@@ -19,14 +22,15 @@ export class UsuariosController {
 
     return this.usuariosService.registrar(registrarUsuarioDto); 
   }
-
+ @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Patch('perfil')
   actualizarUsuario(
-    @Param('id', ParseIntPipe) id: number, 
+    @Req() request, 
     @Body() body: ActualizarUsuarioDto
   ) {
-    return this.usuariosService.actualizar(id, body);
+    const idUsuario = request.user.sub; 
+    return this.usuariosService.actualizar(idUsuario, body);
   }
 
 

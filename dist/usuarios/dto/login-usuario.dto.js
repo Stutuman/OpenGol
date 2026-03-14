@@ -11,16 +11,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginUsuarioDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class LoginUsuarioDto {
     email;
     password;
 }
 exports.LoginUsuarioDto = LoginUsuarioDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'leo@opengol.com' }),
     (0, class_validator_1.IsEmail)({}, { message: 'El formato del correo electronico es invalido' }),
     __metadata("design:type", String)
 ], LoginUsuarioDto.prototype, "email", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'contrasena123' }),
     (0, class_validator_1.MinLength)(6, { message: 'La contraseno debe tener al menos 6 caracteres' }),
     __metadata("design:type", String)
 ], LoginUsuarioDto.prototype, "password", void 0);

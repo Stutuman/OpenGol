@@ -23,7 +23,7 @@ export declare class UsuariosController {
             fecha_registro: Date;
         };
     }>;
-    actualizarUsuario(id: number, body: ActualizarUsuarioDto): Promise<{
+    actualizarUsuario(request: any, body: ActualizarUsuarioDto): Promise<{
         mensaje: string;
         usuario: {
             id: number;
@@ -32,7 +32,6 @@ export declare class UsuariosController {
             telefono: string;
             nivel_juego: string;
             fecha_registro: Date;
-            password?: string;
         };
     }>;
 }

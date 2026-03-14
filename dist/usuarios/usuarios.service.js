@@ -108,7 +108,7 @@ let UsuariosService = class UsuariosService {
             usuarioEncontrado.password_hash = await bcrypt.hash(datosActualizar.password, saltRounds);
             delete datosActualizar.password;
         }
-        const usuarioModificado = Object.assign(usuarioEncontrado, datosActualizar);
+        const usuarioModificado = this.usuarioRepository.merge(usuarioEncontrado, datosActualizar);
         await this.usuarioRepository.save(usuarioModificado);
         const { password_hash, ...usuarioSeguro } = usuarioModificado;
         return {

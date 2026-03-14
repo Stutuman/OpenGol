@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegistrarUsuarioDto = void 0;
 const class_validator_1 = require("class-validator");
+const swagger_1 = require("@nestjs/swagger");
 class RegistrarUsuarioDto {
     nombre;
     email;
@@ -19,21 +20,27 @@ class RegistrarUsuarioDto {
 }
 exports.RegistrarUsuarioDto = RegistrarUsuarioDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Lionel Messi', description: 'el nombre no debe estar vacio' }),
     (0, class_validator_1.IsNotEmpty)({ message: 'El nombre no puede estar vacío' }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], RegistrarUsuarioDto.prototype, "nombre", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'leo@opengol.com' }),
     (0, class_validator_1.IsEmail)({}, { message: 'Debe ser un correo electrónico válido' }),
     __metadata("design:type", String)
 ], RegistrarUsuarioDto.prototype, "email", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        example: 'contrasena123',
+        description: 'La contraseña debe ser alfanumérica y tener mínimo 6 caracteres'
+    }),
     (0, class_validator_1.MinLength)(6, { message: 'La contraseña debe tener al menos 6 caracteres' }),
     __metadata("design:type", String)
 ], RegistrarUsuarioDto.prototype, "password", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
+    (0, swagger_1.ApiProperty)({ example: '1137707135' }),
     __metadata("design:type", String)
 ], RegistrarUsuarioDto.prototype, "telefono", void 0);
 //# sourceMappingURL=registrar-usuario.dto.js.map

@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ActualizarUsuarioDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class ActualizarUsuarioDto {
     nombre;
@@ -19,21 +20,25 @@ class ActualizarUsuarioDto {
 }
 exports.ActualizarUsuarioDto = ActualizarUsuarioDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'Cristiano Ronaldo', required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], ActualizarUsuarioDto.prototype, "nombre", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: 'leo1@opengol.com', required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsEmail)(),
     __metadata("design:type", String)
 ], ActualizarUsuarioDto.prototype, "email", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: '123456', required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], ActualizarUsuarioDto.prototype, "password", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({ example: '1122334455', required: false }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
