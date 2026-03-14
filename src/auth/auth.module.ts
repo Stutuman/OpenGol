@@ -9,7 +9,7 @@ import { AuthController } from './auth.controller';
     UsuariosModule,
     JwtModule.register({
       global:true,//esto permite usar JTW en cualquier parte del proyecto
-      secret:process.env.JWT_SECRET || 'MiSecreteOpenGol2026',
+      secret:process.env.JWT_SECRET || 'MiSecretoOpenGol2026',
       signOptions:{ expiresIn:'1h'},//vence en una hora
     })
   ],
